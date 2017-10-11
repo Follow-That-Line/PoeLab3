@@ -15,14 +15,14 @@ int athreshold = 850;
 int bthreshold = 850;
 int stop = 0;
 int speed = 30;
-
+int cat = 0;
 
 void setup()
 {
   Serial.begin(9600);           // set up Serial library at 9600 bps
 
+
   AFMS.begin();  // create with the default frequency 1.6KHz
-  
   // Set the speed to start, from 0 (off) to 255 (max speed)
   motor1->setSpeed(0);
   motor2->setSpeed(0);
@@ -34,31 +34,36 @@ void setup()
 
 void loop(){
 
-    if(Serial.available() >= 0) {
-      speed = Serial.read();
+    if(Serial.available() > 0) {
+      speed = (Serial.read());
+      Serial.println(speed, DEC);
     }
     else{
       speed = 30;
     }
+    //Serial.println(speed);
+
+
     if(speed > 255){
       speed = 255;
     }
     else if(speed < 0){
       speed = 0;
     }
+
     
     delayMicroseconds(500);
-    
+    //Serial.println(speed);
     int a=analogRead(A0);
     int b=analogRead(A1);
-    Serial.print(a);
-    Serial.print("    ");
-    Serial.println(b);
+    //Serial.print(a);
+    //Serial.print("    ");
+    //Serial.println(b);
     
     //Serial.println(a); 
     if (b<bthreshold && a>athreshold){
       moveForward(speed);
-      Serial.println("moving forward");
+      //Serial.println("moving forward");
     }
     /*else if(b<bthreshold && a<athreshold){
       moveForward(speed);
@@ -73,13 +78,13 @@ void loop(){
     }*/
     else if(b<bthreshold && a<athreshold){
       turnRight(speed);
-      Serial.println("turning right");
+      //Serial.println("turning right");
       //delayMicroseconds(500);
       //moveForward(speed);
     }
     else if(b>bthreshold && a>athreshold){
       turnLeft(speed);
-      Serial.println("turning left");
+      //Serial.println("turning left");
     }
     else if(b>bthreshold && a<athreshold){
       previousTime = millis();
@@ -92,7 +97,7 @@ void loop(){
         }
         
       }
-      Serial.println("turning less left");
+      //Serial.println("turning less left");
     }
  
 }

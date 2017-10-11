@@ -14,8 +14,10 @@ def send_data():
         res.configure(text = "Please enter a valid number(between 0 and 255).")
     else:
         res.configure(text = "Sending value to serial...")
-        cxn.write([int(var)])
-        res.configure(text = str(int(var)))
+        print(int(var))
+        cxn.write(b(str(var)))
+        time.sleep(6)
+        res.configure(text = cxn.readline())
 
 master = Tk()
 
