@@ -5,17 +5,17 @@ from tkinter import *
 import json
 import time
 
-#cxn = Serial('/dev/ttyACM1', baudrate=9600)
+cxn = Serial('COM5', baudrate=9600)
 data = 0
 
 def send_data():
     var = int(textbox.get())
-    if var > 2 or var < 1:
-        res.configure(text = "Please enter a valid number(1 or 2).")
+    if var > 255 or var < 0:
+        res.configure(text = "Please enter a valid number(between 0 and 255).")
     else:
         res.configure(text = "Sending value to serial...")
-        cxn.write([int(data)])
-        res.configure(text = "Successfully sent value to serial.")
+        cxn.write([int(var)])
+        res.configure(text = str(int(var)))
 
 master = Tk()
 

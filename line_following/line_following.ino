@@ -4,13 +4,17 @@
 
 // Create the motor shield object with the default I2C address
 Adafruit_MotorShield AFMS = Adafruit_MotorShield(); 
+unsigned long previousTime = 0;
+unsigned long currentTime = 0;
+const long interval = 500; // the time interval between each blink
 
 // set up the two motor variables
 Adafruit_DCMotor *motor1 = AFMS.getMotor(3);
 Adafruit_DCMotor *motor2 = AFMS.getMotor(4);
-int athreshold = 3;
-int bthreshold = 950;
+int athreshold = 850;
+int bthreshold = 850;
 int stop = 0;
+int speed = 30;
 
 
 void setup()
@@ -26,52 +30,69 @@ void setup()
   motor1->run(RELEASE);
   motor2->run(RELEASE);
   // set up the LEDs for the sensors
-  pinMode(4,OUTPUT);
-  digitalWrite(4,HIGH);
-  pinMode(5, OUTPUT);
-  digitalWrite(5, HIGH);
-
-
 }
 
 void loop(){
 
     if(Serial.available() >= 0) {
-      stop = Serial.read();
+      speed = Serial.read();
     }
     else{
-      stop = 0;
+      speed = 30;
+    }
+    if(speed > 255){
+      speed = 255;
+    }
+    else if(speed < 0){
+      speed = 0;
     }
     
     delayMicroseconds(500);
     
     int a=analogRead(A0);
     int b=analogRead(A1);
-    int speed = 100;
+    Serial.print(a);
+    Serial.print("    ");
+    Serial.println(b);
     
     //Serial.println(a); 
-    if (stop == 1){
-      stopAllMotors();
-    }
-    else if (b<bthreshold && a>athreshold){
+    if (b<bthreshold && a>athreshold){
       moveForward(speed);
+      Serial.println("moving forward");
     }
-    else if(b<bthreshold && a<athreshold){
+    /*else if(b<bthreshold && a<athreshold){
       moveForward(speed);
       delayMicroseconds(1000);
       if(b>bthreshold && a>athreshold){
         turnRight(speed);
+        Serial.println("turning right");
         delayMicroseconds(500);
         moveForward(speed);
+       
       }
-    }
+    }*/
     else if(b<bthreshold && a<athreshold){
-      turnLeft(speed);
-      delayMicroseconds(500);
-      moveForward(speed);
+      turnRight(speed);
+      Serial.println("turning right");
+      //delayMicroseconds(500);
+      //moveForward(speed);
     }
     else if(b>bthreshold && a>athreshold){
-      turnLessRight(speed);
+      turnLeft(speed);
+      Serial.println("turning left");
+    }
+    else if(b>bthreshold && a<athreshold){
+      previousTime = millis();
+      while(a < athreshold){
+        turnLeft(speed);
+        currentTime =millis();
+        if (currentTime - previousTime >= interval) {
+          previousTime = currentTime;
+          break;
+        }
+        
+      }
+      Serial.println("turning less left");
     }
  
 }
@@ -92,8 +113,8 @@ void moveForward(int mySpeed){
 
 void turnRight(int mySpeed){
         motor1->setSpeed(mySpeed);
-        if(mySpeed>50){
-          motor2->setSpeed(mySpeed-50);
+        if(mySpeed>20){
+          motor2->setSpeed(mySpeed-20);
         }
         else{
           motor2->setSpeed(0);
@@ -104,8 +125,8 @@ void turnRight(int mySpeed){
 
 void turnLeft(int mySpeed){
         motor2->setSpeed(mySpeed);
-        if(mySpeed>50){
-          motor1->setSpeed(mySpeed-50);
+        if(mySpeed>20){
+          motor1->setSpeed(mySpeed-20);
         }
         else{
           motor1->setSpeed(0);
@@ -117,11 +138,23 @@ void turnLeft(int mySpeed){
 //function to turn right less sharply
 void turnLessRight(int mySpeed){
         motor1->setSpeed(mySpeed);
-        if(mySpeed>30){
-          motor2->setSpeed(mySpeed-30);
+        if(mySpeed>10){
+          motor2->setSpeed(mySpeed-10);
         }
         else{
           motor2->setSpeed(0);
+        }
+        motor1->run(FORWARD);
+        motor2->run(FORWARD);
+}
+
+void turnLessLeft(int mySpeed){
+        motor2->setSpeed(mySpeed);
+        if(mySpeed>10){
+          motor1->setSpeed(mySpeed-10);
+        }
+        else{
+          motor1->setSpeed(0);
         }
         motor1->run(FORWARD);
         motor2->run(FORWARD);
