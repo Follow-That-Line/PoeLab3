@@ -4,7 +4,7 @@ from serial import Serial, SerialException
 import json
 import time
 
-cxn = Serial('COM5', baudrate=9600)
+cxn = Serial('/dev/ttyACM0', baudrate=9600)
 results_list = []
 first = True
 cmd_id = 0
@@ -30,7 +30,7 @@ while(True):
                 first = False
             if time.clock()-prevtime > 30:
                 cmd_id = 2
-                with open('motor_speeds.csv', 'w') as f:
+                with open('motor_speeds2.csv', 'w') as f:
                     json.dump(results_list, f)
                 first = True
             print (result)
