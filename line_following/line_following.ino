@@ -9,13 +9,15 @@ unsigned long currentTime = 0;
 const long interval = 500; // the time interval between each blink
 
 // set up the two motor variables
-Adafruit_DCMotor *motor1 = AFMS.getMotor(3);
-Adafruit_DCMotor *motor2 = AFMS.getMotor(4);
+Adafruit_DCMotor *motor1 = AFMS.getMotor(2);
+Adafruit_DCMotor *motor2 = AFMS.getMotor(1);
 int athreshold = 850;
 int bthreshold = 850;
 int stop = 0;
 int speed = 30;
 int cat = 0;
+int integerValue = 0;
+int incomingByte = 0;
 
 void setup()
 {
@@ -34,12 +36,18 @@ void setup()
 
 void loop(){
 
-    if(Serial.available() > 0) {
-      speed = (Serial.read());
-      Serial.println(speed, DEC);
-    }
-    else{
-      speed = 30;
+    if (Serial.available() > 0) {   // something came across serial
+        integerValue = 0;         // throw away previous integerValue
+        while(1) {            // force into a loop until 'n' is received
+          incomingByte = Serial.read();
+          if (incomingByte == '\n') break;   // exit the while(1), we're done receiving
+          if (incomingByte == -1) continue;  // if no characters are in the buffer read() returns -1
+          integerValue *= 10;  // shift left 1 decimal place
+          // convert ASCII to integer, add, and shift left 1 decimal place
+          integerValue = ((incomingByte - 48) + integerValue);
+        }
+      Serial.println(integerValue);   // Do something with the value
+      speed = integerValue;
     }
     //Serial.println(speed);
 

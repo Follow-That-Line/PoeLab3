@@ -5,7 +5,7 @@ from tkinter import *
 import json
 import time
 
-cxn = Serial('COM5', baudrate=9600)
+cxn = Serial('COM7', baudrate=9600)
 data = 0
 
 def send_data():
@@ -15,7 +15,8 @@ def send_data():
     else:
         res.configure(text = "Sending value to serial...")
         print(int(var))
-        cxn.write(b(str(var)))
+        cxn.write([int(var)])
+        cxn.write([int(255)])
         time.sleep(6)
         res.configure(text = cxn.readline())
 
