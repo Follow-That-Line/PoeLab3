@@ -24,13 +24,13 @@ while(True):
             if cmd_id == 1:
                 result = cxn.readline();
                 result = str(result)
-                result = result.strip("\\r\\n'")
                 result = result[2:]
+                result = result.strip("\\r\\n'")
                 results_list.append(result)
                 first = False
-            if time.clock()-prevtime > 10:
+            if time.clock()-prevtime > 30:
                 cmd_id = 2
-                with open('sensor_values_floor.csv', 'w') as f:
+                with open('motor_speeds.csv', 'w') as f:
                     json.dump(results_list, f)
                 first = True
             print (result)

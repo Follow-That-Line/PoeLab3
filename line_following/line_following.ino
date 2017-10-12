@@ -9,8 +9,8 @@ unsigned long currentTime = 0;
 const long interval = 500; // the time interval between each blink
 
 // set up the two motor variables
-Adafruit_DCMotor *motor1 = AFMS.getMotor(2);
-Adafruit_DCMotor *motor2 = AFMS.getMotor(1);
+Adafruit_DCMotor *motor1 = AFMS.getMotor(3);
+Adafruit_DCMotor *motor2 = AFMS.getMotor(4);
 int athreshold = 850;
 int bthreshold = 850;
 int stop = 0;
@@ -18,6 +18,7 @@ int speed = 30;
 int cat = 0;
 int integerValue = 0;
 int incomingByte = 0;
+int cmd_id;
 
 void setup()
 {
@@ -36,7 +37,7 @@ void setup()
 
 void loop(){
 
-    if (Serial.available() > 0) {   // something came across serial
+   /* if (Serial.available() > 0) {   // something came across serial
         integerValue = 0;         // throw away previous integerValue
         while(1) {            // force into a loop until 'n' is received
           incomingByte = Serial.read();
@@ -46,19 +47,27 @@ void loop(){
           // convert ASCII to integer, add, and shift left 1 decimal place
           integerValue = ((incomingByte - 48) + integerValue);
         }
-      Serial.println(integerValue);   // Do something with the value
-      speed = integerValue;
-    }
+      cat = integerValue;
+    }*/
+    /*if(Serial.available() >= 0) {
+    cmd_id = Serial.read();
+  }
+  else{
+    cmd_id = 0;
+  }
+  
+switch(cmd_id){
+  case 1:*/
     //Serial.println(speed);
 
 
-    if(speed > 255){
+    /*if(speed > 255){
       speed = 255;
     }
     else if(speed < 0){
       speed = 0;
     }
-
+*/
     
     delayMicroseconds(500);
     //Serial.println(speed);
@@ -107,7 +116,7 @@ void loop(){
       }
       //Serial.println("turning less left");
     }
- 
+}
 }
 
 void stopAllMotors(){
@@ -115,6 +124,10 @@ void stopAllMotors(){
       motor2->setSpeed(0);
       motor1->run(RELEASE);
       motor2->run(RELEASE);
+      Serial.println(analogRead(A0));
+      Serial.println(analogRead(A1));
+      Serial.println(0);
+      Serial.println(0);
 }
 
 void moveForward(int mySpeed){
@@ -122,27 +135,46 @@ void moveForward(int mySpeed){
       motor2->setSpeed(mySpeed);
       motor1->run(FORWARD);
       motor2->run(FORWARD);
-}
+      Serial.println(analogRead(A0));
+      Serial.println(analogRead(A1));
+      Serial.println(mySpeed);
+      Serial.println(mySpeed);}
 
 void turnRight(int mySpeed){
         motor1->setSpeed(mySpeed);
         if(mySpeed>20){
           motor2->setSpeed(mySpeed-20);
+          Serial.println(analogRead(A0));
+          Serial.println(analogRead(A1));
+          Serial.println(mySpeed);
+          Serial.println(mySpeed-20);
         }
         else{
           motor2->setSpeed(0);
+          Serial.println(analogRead(A0));
+          Serial.println(analogRead(A1));
+          Serial.println(mySpeed);
+          Serial.println(0);
         }
         motor1->run(FORWARD);
         motor2->run(FORWARD);
-}
+       }
 
 void turnLeft(int mySpeed){
         motor2->setSpeed(mySpeed);
         if(mySpeed>20){
           motor1->setSpeed(mySpeed-20);
+          Serial.println(analogRead(A0));
+          Serial.println(analogRead(A1));
+          Serial.println(mySpeed-20);
+          Serial.println(mySpeed);
         }
         else{
           motor1->setSpeed(0);
+          Serial.println(analogRead(A0));
+          Serial.println(analogRead(A1));
+          Serial.println(0);
+          Serial.println(mySpeed);
         }
         motor1->run(FORWARD);
         motor2->run(FORWARD);
