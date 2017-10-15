@@ -27,8 +27,10 @@ while(True):
                 result = result[2:]
                 result = result.strip("\\r\\n'")
                 results_list.append(result)
+                with open('motor_speeds2.csv', 'w') as f:
+                    json.dump(results_list, f)
                 first = False
-            if time.clock()-prevtime > 30:
+            if time.clock()-prevtime > 15:
                 cmd_id = 2
                 with open('motor_speeds2.csv', 'w') as f:
                     json.dump(results_list, f)

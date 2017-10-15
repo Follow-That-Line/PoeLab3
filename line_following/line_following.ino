@@ -49,7 +49,7 @@ void loop(){
         }
       cat = integerValue;
     }*/
-    /*if(Serial.available() >= 0) {
+    if(Serial.available() >= 0) {
     cmd_id = Serial.read();
   }
   else{
@@ -57,7 +57,7 @@ void loop(){
   }
   
 switch(cmd_id){
-  case 1:*/
+  case 1:
     //Serial.println(speed);
 
 
